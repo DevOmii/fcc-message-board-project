@@ -4,9 +4,9 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import apiRoutes from './routes/api.js';
-// Importación de módulos que probablemente usan CommonJS
-import * as fccTestingRoutes from './routes/fcctesting.cjs';
-import * as runner from './test-runner.cjs';
+// Importación de módulos que usan CommonJS (fcctesting.cjs y test-runner.cjs)
+import * as fccTestingRoutes from './routes/fcctesting.cjs'; 
+import * as runner from './test-runner.cjs'; 
 import connectDB from './db.js';
 
 // Cargar variables de entorno
@@ -17,11 +17,16 @@ connectDB();
 
 const app = express();
 
-// --- Configuraciones de Seguridad (Helmet) ---
-// Configuración básica requerida por freeCodeCamp
+// --- Configuraciones de Seguridad (HELMET) ---
+// 2. Solo permitir que el sitio se cargue en un iFrame en tus propias páginas.
+app.use(helmet.frameguard({ action: 'sameorigin' })); 
+// 3. No permitir el prefetch de DNS.
+app.use(helmet.dnsPrefetchControl({ allow: false })); 
+// 4. Solo permitir que el sitio envíe el referrer para tus propias páginas.
+app.use(helmet.referrerPolicy({ policy: 'same-origin' })); 
+// Otras configuraciones de seguridad estándar
 app.use(helmet.hidePoweredBy({ setTo: 'PHP 4.2.0' }));
 app.use(helmet.xssFilter());
-app.use(helmet.frameguard({ action: 'deny' }));
 app.use(helmet.noSniff());
 
 app.use(cors({ origin: '*' })); // Permite que FCC use la API
@@ -39,7 +44,6 @@ app.route('/')
   });
 
 // Rutas de testing de freeCodeCamp
-// Usamos .default() porque la importación completa (*) a menudo coloca la exportación de CommonJS bajo la clave 'default'
 fccTestingRoutes.default(app);
 
 // Rutas de API
@@ -59,7 +63,6 @@ const listener = app.listen(process.env.PORT || 3000, function() {
     console.log('Running Tests...');
     setTimeout(function() {
       try {
-        // Ejecutar el runner de pruebas
         runner.default.run(); 
       } catch (e) {
         let error = e;
@@ -69,4 +72,4 @@ const listener = app.listen(process.env.PORT || 3000, function() {
   }
 });
 
-export default app; // Exportamos la app para las pruebas
+export default app;
