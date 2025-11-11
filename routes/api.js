@@ -34,7 +34,7 @@ export default function(app) {
         });
 
         await newThread.save();
-        // CAMBIO: Enviamos 'success' en lugar de redirección para pasar la prueba
+        // Devuelve 'success' para pasar las pruebas POST
         res.send('success'); 
 
       } catch (err) {
@@ -75,7 +75,7 @@ export default function(app) {
       }
     })
 
-    // 5. REPORTAR un hilo (PUT)
+    // 5. REPORTAR un hilo (PUT) -- CORREGIDO
     .put(async (req, res) => {
       const { thread_id } = req.body;
 
@@ -93,7 +93,8 @@ export default function(app) {
             return res.send('no thread found');
         }
 
-        res.send('success');
+        // CORRECCIÓN: Debe devolver 'reported' según el requisito FCC
+        res.send('reported');
 
       } catch (err) {
         console.error(err);
@@ -164,7 +165,7 @@ export default function(app) {
             return res.send('thread not found');
         }
         
-        // CAMBIO: Enviamos 'success' en lugar de redirección para pasar la prueba
+        // Devuelve 'success' para pasar las pruebas POST
         res.send('success'); 
 
       } catch (err) {
@@ -205,7 +206,7 @@ export default function(app) {
       }
     })
 
-    // 10. REPORTAR una respuesta (PUT)
+    // 10. REPORTAR una respuesta (PUT) -- CORREGIDO
     .put(async (req, res) => {
       const { thread_id, reply_id } = req.body;
 
@@ -228,7 +229,8 @@ export default function(app) {
             return res.send('no thread or reply found');
         }
         
-        res.send('success');
+        // CORRECCIÓN: Debe devolver 'reported' según el requisito FCC
+        res.send('reported');
 
       } catch (err) {
         console.error(err);
